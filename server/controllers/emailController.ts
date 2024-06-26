@@ -38,7 +38,7 @@ export const fetchEmails = async (req: Request, res: Response) => {
     const response = await gmail.users.messages.list({
       userId: 'me',
       labelIds: ['INBOX'],
-      maxResults: 10, // Adjust maxResults as per your requirement
+      maxResults: 50, // Adjust maxResults as per your requirement
       q: 'in:inbox', // Optional: additional query parameters
     });
 

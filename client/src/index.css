@@ -1,3 +1,17 @@
 @tailwind base;
   @tailwind components;
   @tailwind utilities;
+
+  /* EmailDetail.css */
+.email-container {
+  white-space: nowrap;
+  background-color: black;
+}
+
+.email-content {
+  white-space: nowrap;
+  color: white; /* Example custom style */
+  padding: 10px; /* Example custom style */
+}
+
+/* Add more custom styles as needed */
