@@ -27,3 +27,4 @@ export const oauth2callback = (req: Request, res: Response) => {
         res.send(tokens);
     });
 };
+

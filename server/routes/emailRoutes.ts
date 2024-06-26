@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {  googleCallback,fetchEmails } from '../controllers/emailController';
+import {  googleCallback,fetchEmails,fetchEmail } from '../controllers/emailController';
 
 const gmailRouter = Router();
 
@@ -8,4 +8,5 @@ const gmailRouter = Router();
 gmailRouter.get('/auth/google/callback', googleCallback);
 
 gmailRouter.get('/emails', fetchEmails);
+gmailRouter.get('/emails/:id', fetchEmail);
 export default gmailRouter;

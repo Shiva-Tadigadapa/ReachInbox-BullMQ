@@ -66,3 +66,26 @@ export const fetchEmails = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch emails' });
   }
 };
+
+
+export const fetchEmail = async (req: Request, res: Response) => {
+  const accessToken = req.query.access_token as string;
+  const emailId = req.params.id;
+  const oAuth2Client = getGoogleClient();
+  oAuth2Client.setCredentials({ access_token: accessToken });
+
+  const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
+
+  try {
+    const response = await gmail.users.messages.get({
+      userId: 'me',
+      id: emailId,
+      format: 'full', // Request full message payload
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching email:', error);
+    res.status(500).json({ error: 'Failed to fetch email' });
+  }
+};

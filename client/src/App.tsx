@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import AuthForm from './components/AuthForm';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import After from './components/After';
 import EmailList from './components/EmailList';
 import EmailDetail from './components/Email';
