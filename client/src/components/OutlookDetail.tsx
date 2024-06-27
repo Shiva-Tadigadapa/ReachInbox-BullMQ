@@ -46,17 +46,23 @@ const OutlookDetail = () => {
 
   return (
     <>
-      <h1>Outlook Email Detail</h1>
       <button onClick={() => window.history.back()}>Back to List</button>
       {email && (
-        <div>
-          <h2>
-            From:{" "}
-            {
-                email.from.emailAddress.name
-            }
-          </h2>
-          <p dangerouslySetInnerHTML={{ __html:email.body.content}} ></p>
+        <div className=" ">
+          <div className=" flex justify-between ">
+            <div className=" flex flex-col">
+            <h2 className=" text-blue-600 font-semibold">
+              From: {email.from.emailAddress.name}
+              {`  <${email.from.emailAddress.address}>`}
+            </h2>
+            <h2>
+              To: {email.toRecipients[0].emailAddress.name}
+              {`  <${email.toRecipients[0].emailAddress.address}>`}
+            </h2>
+            </div>
+          <p className=" px-5">Date: {new Date(email.sentDateTime).toLocaleString()}</p>
+          </div>
+          <p dangerouslySetInnerHTML={{ __html: email.body.content }}></p>
         </div>
       )}
       {error && <p>Error: {error}</p>}

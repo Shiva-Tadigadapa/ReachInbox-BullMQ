@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import OutlookDetail from "./OutlookDetail";
+import { useParams } from "react-router-dom";
 
 const OutLookList = () => {
   const navigate = useNavigate();
   const [data, setdata] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const { emailId } = useParams<{ emailId: string }>();
 
   const localAccessToken = localStorage.getItem("accessToken");
 
@@ -29,21 +32,35 @@ const OutLookList = () => {
 
   return (
     <>
-      <h1>Outlook Email List</h1>
-      <button onClick={() => navigate("/")}>Back to Home</button>
-      {data && (
-        <ul>
-          {data.map((email: any) => (
-            <Link to={`/outlook/emails/${email.id}`}>
-            <li key={email.id} className=" bg-blue-300 mt-4">
-              <p>From: {email.bodyPreview}</p>
-                <p>Subject: {email.subject}</p>
-            </li>
-            </Link>
-          ))}
-        </ul>
-      )}
-      {error && <p>Error: {error}</p>}
+      <div className="flex flex-col">
+        <h1 className=" text-xl  mb-4">Outlook Email List</h1>
+        <div className="flex">
+          <div className="w-[40%] h-full   px-2 ">
+              {data && (
+                <ul className="  ">
+                  {data.map((email: any) => (
+                    <Link to={`/outlook/emails/${email.id}`}>
+                      <li key={email.id} className=" bg-blue-300 mt-2 rounded-xl hover:bg-gray cursor-pointer  p-4 shadow-md border-gray-400   border"
+                       style={
+                        emailId === email.id
+                          ? { backgroundColor: "#89acf4" }
+                          : { backgroundColor: "white" }
+                      }
+                      >
+                        <p>Subject: {email.subject}</p>
+                        <p>From: {email.sender.emailAddress.name}</p>
+                      </li>
+                    </Link>
+                  ))}
+                </ul>
+              )}
+              {error && <p>Error: {error}</p>}
+          </div>
+          <div className="  w-full   sticky top-0  h-full ">
+            <OutlookDetail />
+          </div>
+        </div>
+      </div>
     </>
   );
 };

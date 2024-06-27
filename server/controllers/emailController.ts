@@ -1,10 +1,13 @@
 import { Request, Response } from 'express';
 import { google } from 'googleapis';
 import { getGoogleToken, getGoogleClient as getLocalGoogleClient } from '../config/googleAuth';
+import analyzeEmailUsingGenerativeAI from '../config/Gemini';
+import { Base64 } from 'js-base64';
+import { GenerateContentResult } from '@google/generative-ai';
 
 export const googleCallback = async (req: Request, res: Response) => {
   const code = req.query.code as string;
-  console.log('code:', code)
+  console.log('code:', code);
   try {
     const tokens = await getGoogleToken(code);
     res.json({ accessToken: tokens.access_token });
@@ -13,10 +16,6 @@ export const googleCallback = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to obtain access token' });
   }
 };
-
-
-
-
 
 const getGoogleClient = () => {
   const oAuth2Client = new google.auth.OAuth2(
@@ -59,14 +58,42 @@ export const fetchEmails = async (req: Request, res: Response) => {
         };
       })
     );
+    
+    // Extract and analyze the HTML content
+    const analyzedEmails = await Promise.all(
+      emailDetails.map(async (email) => {
+        const parts = email.payload.parts || [];
+        let htmlContent = '';
+        let from = email.payload.headers?.find((header) => header.name === 'From')?.value || 'No Sender';
+        parts.forEach((part) => {
+          if (part.mimeType === 'text/plain' && part.body && part.body.data) {
+            htmlContent = Base64.decode(part.body.data);
+          }
+        });
 
-    res.json(emailDetails);
+        let analyzedEmail:any = '';
+
+        if (htmlContent) {
+           analyzedEmail = await analyzeEmailUsingGenerativeAI(htmlContent,from);
+          // console.log(analyzedEmail);
+        }
+
+        return {
+          id: email.id,
+          htmlContent: htmlContent,
+          subject: email.payload.headers?.find((header) => header.name === 'Subject')?.value || 'No Subject',
+          from: email.payload.headers?.find((header) => header.name === 'From')?.value || 'No Sender',
+           analyzedEmail: analyzedEmail,
+        };
+      })
+    );
+
+    res.json(analyzedEmails,);
   } catch (error) {
     console.error('Error fetching emails:', error);
     res.status(500).json({ error: 'Failed to fetch emails' });
   }
 };
-
 
 export const fetchEmail = async (req: Request, res: Response) => {
   const accessToken = req.query.access_token as string;

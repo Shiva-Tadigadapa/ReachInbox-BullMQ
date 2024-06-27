@@ -25,7 +25,7 @@ const App: React.FC = () => {
       <Route path="/auth/google/callback" element={<After />} />
       <Route path="/outlook/emails" element={<OutLookAfter />} />
       <Route path="/emails/:emailId" element={<EmailList />} />
-      <Route path="/outlook/emails/:emailId" element={<OutlookDetail />} />
+      <Route path="/outlook/emails/:emailId" element={<OutLookList />} />
     </Routes>
   );
 };
