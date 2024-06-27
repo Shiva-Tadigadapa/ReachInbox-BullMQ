@@ -12,6 +12,7 @@ app.use('/api', gmailRouter);
 app.use('/auth', authRoutes);
 app.use('/gmail', gmailRoutes);
 app.use('/outlook', outlookRoutes);
+app.use('/send', gmailRouter);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
